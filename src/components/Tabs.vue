@@ -12,6 +12,13 @@
                     {{ city.name }}
                 </li>
             </ul>
+
+            <button @click.prevent="refresh"
+                    class="relative text-sm text-blue-600 mr-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+            </button>
         </div>
     </div>
 </template>
@@ -22,17 +29,36 @@ import {ref, onMounted} from 'vue'
 
 export default {
 
-    setup() {
-    const tabActive = ref();
+    emits: ['cityInfo', 'refresh'],
 
-    onMounted(() => {
-    });
+    setup(props, { emit }) {
+        const cityFromSearch = ref(props.cityFromSearch)
+        const tabActive = ref();
 
+        onMounted(() => {
+            setCity(preDefinedCities[0], 0)
+        });
 
-    return {
-        preDefinedCities,
-        tabActive,
-    }
+        const setCity = (city, index) => {
+            tabActive.value = index;
+            emit('cityInfo', {
+                city: city.name,
+                lon: city.lon,
+                lat: city.lat
+            })
+        }
+
+        const refresh = () => {
+            emit('refreshForcast', 'updated')
+        }
+
+        return {
+            preDefinedCities,
+            setCity,
+            tabActive,
+            refresh,
+            cityFromSearch
+        }
     }
 }
 </script>

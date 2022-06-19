@@ -33,8 +33,8 @@ class Forecast {
      async fetchWeather() {
         let response = null;
         try {
-            response = await axios(`hourly.json`)
-            // response = await axios(`${this.baseApiUrl}?units=metric&lat=${this.lat}&lon=${this.lon}&appid=${ import.meta.env.VITE_API_KEY }`)
+            response = await axios(`${this.baseApiUrl}?units=metric&lat=${this.lat}&lon=${this.lon}&appid=${ import.meta.env.VITE_API_KEY }`)
+            // response = await axios(`../src/assets/hourly.json`) // data from openweathermap for testing
         } catch (error) {
             this.errorHourly = 'Somthing went wrong with the hours forecast'
         }
@@ -47,8 +47,8 @@ class Forecast {
     async fetchDaily() {
         let response = null;
         try {
-            // const response = await axios(`${this.baseApiUrl}/daily?units=metric&lat=${this.lat}&lon=${this.lon}&appid=${ import.meta.env.VITE_API_KEY }`)
-            response = await axios(`daily.json`)
+            // response = await axios(`${this.baseApiUrl}/daily?units=metric&lat=${this.lat}&lon=${this.lon}&appid=${ import.meta.env.VITE_API_KEY }`)
+            response = await axios(`../src/assets/daily.json`) // data from openweathermap for testing
         } catch (error) {
             this.errorDaily = 'Somthing went wrong with the daily forecast'
         }
