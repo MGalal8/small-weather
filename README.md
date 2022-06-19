@@ -1,7 +1,23 @@
-# Vue 3 + Vite
+A small weather application
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Features
+* Next hours and next days forecast for selected city
+* Auto-complete city search within 20.000 cities
 
-## Recommended IDE Setup
+## Built With
+* Vuejs 3
+* Tailwind Css
+* openweathermap API
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## Setup
+npm install
+
+## Development
+npx vite
+
+## Build for production
+npx vite build
+
+## locally preview production
+npx vite preview
+
