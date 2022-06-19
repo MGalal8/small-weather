@@ -1,23 +1,23 @@
-A small weather application
+## A small weather application
 
-## Features
+# Features
 * Next hours and next days forecast for selected city
 * Auto-complete city search within 20.000 cities
 
-## Built With
+# Built With
 * Vuejs 3
 * Tailwind Css
 * openweathermap API
 
-## Setup
+# Setup
 npm install
 
-## Development
+# Development
 npx vite
 
-## Build for production
+# Build for production
 npx vite build
 
-## locally preview production
+# locally preview production
 npx vite preview
 
