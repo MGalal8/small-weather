@@ -14,8 +14,20 @@
                                 </div>
                                 <input id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" type="text"
                                 class="dropdown-toggle bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:placeholder-gray-400"
-                                placeholder="Search for a city...">
-                           </div>
+                                v-model="searchTerm" placeholder="Search for a city...">
+
+                            <ul v-if="dropDownToggle"
+                                class="dropdown-menu absolute bg-white z-50 mt-3 py-3 w-full border-2 border-grey text-left"
+                                aria-labelledby="dropdown"
+                                >
+
+                                <li v-for="city in searchInCities" :key="city.city_id" @click="selectCity(city)"
+                                    class="dropdown-item text-sm py-2 px-4 block w-full cursor-pointer text-gray-700 hover:bg-gray-100">
+                                    {{ city.city_name }}
+                                </li>
+
+                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -25,11 +37,54 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue'
+import { data } from '../assets/cities_2000.json'
 
 export default {
+    emits: ['cityInfo'],
+    setup(props, { emit } ) {
+        let searchTerm = ref('');
+        let cities = data;
 
-    setup() {
+        // search for matching from cities_20000
+        const searchInCities = computed(() => {
+            if (searchTerm.value === '') {
+                return []
+            }
+            let matches = 0
+            return cities.filter(city => {
+                if(city?.city_name?.toLowerCase()
+                    .includes( searchTerm?.value?.toLowerCase())
+                    && matches < 10 ){
+                    matches++
+                    return city
+                }
+            })
+        });
+
+        // Select and set city with coordinates
+        const selectCity = (city) => {
+            searchTerm.value = ''
+            emit('cityInfo', {
+                city: city.city_name,
+                lon: city.lon,
+                lat: city.lat,
+                search: true
+            })
+        }
+
+        const dropDownToggle = computed(() => {
+            if(searchInCities.value.length > 0){
+                return true
+            }
+        });
+
         return {
+            searchTerm,
+            cities,
+            searchInCities,
+            dropDownToggle,
+            selectCity,
         }
     }
 }

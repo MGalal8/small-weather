@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Search></Search>
+    <Search @cityInfo="getCityInfo"></Search>
 
     <Tabs
         :class="{'opacity-50 bg-blue-600': fromSearch}"
