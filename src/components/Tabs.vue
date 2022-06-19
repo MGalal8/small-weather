@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import preDefinedCities from '../services/cities.js'
+import preDefinedCities from '../services/preDefinedCities.js'
 import {ref, onMounted} from 'vue'
 
 export default {
