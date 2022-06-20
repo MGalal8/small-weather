@@ -3,7 +3,7 @@
         <div class=" flex flex-row justify-between  font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
             <ul class="text-md">
                 <li
-                    v-for="(city, index) in preDefinedCities"
+                    v-for="(city, index) in preCities"
                     :key="city.id"
                     @click.prevent="setCity(city, index)"
                     class="inline-block p-4 border-b-2 border-transparent cursor-pointer text-black "
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import preDefinedCities from '../services/preDefinedCities.js'
+import preCities from '../assets/preCities.js'
 import {ref, onMounted} from 'vue'
 
 export default {
@@ -36,16 +36,12 @@ export default {
         const tabActive = ref();
 
         onMounted(() => {
-            setCity(preDefinedCities[0], 0)
+            setCity(preCities[0], 0)
         });
 
         const setCity = (city, index) => {
             tabActive.value = index;
-            emit('cityInfo', {
-                city: city.name,
-                lon: city.lon,
-                lat: city.lat
-            })
+            emit('cityInfo',  [city.name, city.lon, city.lat] )
         }
 
         const refresh = () => {
@@ -53,7 +49,7 @@ export default {
         }
 
         return {
-            preDefinedCities,
+            preCities,
             setCity,
             tabActive,
             refresh,

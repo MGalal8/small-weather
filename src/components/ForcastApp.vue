@@ -12,8 +12,8 @@
     <!-- Hourly section -->
     <div class="hourly bg-white w-full pb-3">
     <span class="text-xs py-2 text-right block right-0   px-3">  Updated: {{ weather.timeOfUpdate}}</span>
-      <h1 class="block text-left text-lg font-bold  p-5">Next Hours: <span class="font-normal text-blue-600">{{ weather.city}}</span></h1>
-      <div v-if="!errorHourly" class="flex flex-row justify-between m-auto p-2  divide-x">
+      <h1 class="block text-left text-lg font-bold  p-5">Next Hours: <span class="font-normal text-blue-600">{{weather.city}}</span></h1>
+      <div class="flex flex-row justify-between m-auto p-2  divide-x">
         <div
           v-for="hour in hourlyForcastLimit"
           :key="hour.id"
@@ -24,16 +24,16 @@
           <p class=" font-medium text-gray-600">{{ getHour(hour.dt) }} </p>
         </div>
       </div>
-       <div v-else class="text-center text-red-600">
-          {{ errorHourly }}
+       <div class="text-center text-red-600">
+          {{ errorData }}
         </div>
     </div>
 
     <!-- Daily section -->
 
     <div class="daily  bg-white w-full mt-2 p-5">
-       <h1 class="text-left font-bold text-lg mb-2">Next 5 Days: <span class="font-normal text-blue-600">{{ weather.city}}</span></h1>
-      <div v-if="!errorDaily" class="flex flex-col  divide-y">
+       <h1 class="text-left font-bold text-lg mb-2">Next 5 Days: <span class="font-normal text-blue-600">{{ weather.city }}</span></h1>
+      <div class="flex flex-col  divide-y">
         <div
           v-for="day in dailyForcastLimit"
           :key="day.id"
@@ -45,8 +45,8 @@
           </div>
         </div>
       </div>
-      <div v-else class="text-center text-red-600">
-          {{ errorDaily }}
+      <div class="text-center text-red-600">
+          {{ errorData }}
         </div>
     </div>
 
@@ -59,8 +59,8 @@
 
 import { computed, onMounted } from '@vue/runtime-core'
   import { ref, reactive, toRefs } from 'vue'
-  import Forecast from '../services/api.js'
-  import {getHour, getDay, getNow} from '../services/utils.js'
+  import Forecast from '../services/forecastApi.js'
+  import {getHour, getDay, getNow} from '../helpers/utils.js'
   import Search from './Search.vue'
   import Tabs from './Tabs.vue'
 
@@ -72,28 +72,24 @@ import { computed, onMounted } from '@vue/runtime-core'
 
     setup() {
       let newForcast = null
+      let cityData = reactive([])
+      let fromSearch = ref(false)
       let weather = reactive({
         dataHours: [],
         dataDaily: [],
         timeOfUpdate:'',
-        errorDaily: '',
-        errorHourly: '',
+        errorData: '',
         city: '',
         lon: '',
         lat: '',
       })
 
-      let fromSearch = ref(false)
-
-      onMounted(() => {
-        getCityInfo();
-      })
+      onMounted(() => { getCityInfo() })
 
       const getCityInfo = (city) => {
          if(city !== undefined) {
-           weather.city = city.city;
-           weather.lon = city.lon;
-           weather.lat = city.lat;
+           cityData = [...city]
+           weather.city = city[0]
            city.search? fromSearch.value = true : fromSearch.value = false;
          }
          refreshForcast()
@@ -101,23 +97,24 @@ import { computed, onMounted } from '@vue/runtime-core'
 
       // refresh forcast data
       const refreshForcast = async() => {
-        fetchWeather()
+        await fetchWeather()
         weather.timeOfUpdate = getNow()
       }
 
       const fetchWeather = async() => {
         // Create instance from Forecast class
-        newForcast =  new Forecast(weather.city, weather.lon, weather.lat);
+        newForcast =  new Forecast();
+        newForcast.setForecast(cityData);
         await newForcast.updateWeather()
+
         // get Forcast Hours
         weather.dataHours =  await newForcast.dataHours
         // get Forcast Days
         weather.dataDaily =  await newForcast.dataDays
-
         // get Forcast error
-        weather.errorDaily = newForcast.errorDaily
-        weather.errorHourly = newForcast.errorHourly
+        weather.errorData =  newForcast.errorData
       }
+
 
       const hourlyForcastLimit = computed(() => {
         if(weather?.dataHours?.cod == 200) {
@@ -131,21 +128,15 @@ import { computed, onMounted } from '@vue/runtime-core'
         }
       });
 
-      const errorDaily = computed(() => {
-        if(weather?.errorDaily) {
-          return weather.errorDaily
+      const errorData = computed(() => {
+        if(weather?.errorData) {
+          return weather.errorData
         }
       })
-
-      const errorHourly = computed(() => {
-        if(weather?.errorHourly) {
-          return weather.errorHourly
-        }
-      })
-
 
       return {
         newForcast,
+        cityData,
         weather,
         getCityInfo,
         hourlyForcastLimit,
@@ -154,8 +145,7 @@ import { computed, onMounted } from '@vue/runtime-core'
         getDay,
         refreshForcast,
         fromSearch,
-        errorDaily,
-        errorHourly
+        errorData,
       }
     }
   }

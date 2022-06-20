@@ -6,7 +6,6 @@
                 <div class="flex justify-center">
                     <div class="sm:w-48">
                         <div ref="searchInput" class="input-group relative flex flex-wrap ">
-
                             <label for="simple-search" class="sr-only">Search</label>
                             <div class="relative w-full">
                                 <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none ">
@@ -65,12 +64,7 @@ export default {
         // Select and set city with coordinates
         const selectCity = (city) => {
             searchTerm.value = ''
-            emit('cityInfo', {
-                city: city.city_name,
-                lon: city.lon,
-                lat: city.lat,
-                search: true
-            })
+            emit('cityInfo',  [city.city_name, city.lon, city.lat] )
         }
 
         const dropDownToggle = computed(() => {
