@@ -28,3 +28,5 @@ npx vite build
 ```bash
 npx vite preview
 ```
+
+![alt text](https://github.com/MGalal8/small-weather/blob/main/weather-app.jpg)
