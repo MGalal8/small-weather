@@ -38,7 +38,6 @@ class Forecast {
       */
      async fetchHourly() {
             const response = await axios(`${this.baseApiUrl}?units=metric&lat=${this.lat}&lon=${this.lon}&appid=${ import.meta.env.VITE_API_KEY }`)
-            //  const response = await axios(`./hourly.json`) // data from openweathermap for testing
              return  await Object.freeze(response.data)
         }
 
@@ -60,5 +59,16 @@ class Forecast {
         this.dataHours = tempHourlyData;
         this.dataDays = tempDailyData;
     }
+
+    getHours() {
+        return this.dataHours;
+    }
+    getDays() {
+        return this.dataDays;
+    }
+    getError() {
+        return this.errorData;
+    }
+
 }
 export default Forecast;

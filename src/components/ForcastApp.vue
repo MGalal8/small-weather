@@ -86,20 +86,14 @@ import { computed, onMounted } from '@vue/runtime-core'
 
       onMounted(() => { getCityInfo() })
 
-      const getCityInfo = (city) => {
+      const getCityInfo = async (city) => {
          if(city !== undefined) {
            cityData = [...city]
            weather.city = city[0]
            city.search? fromSearch.value = true : fromSearch.value = false;
          }
-         refreshForcast()
-        }
-
-      // refresh forcast data
-      const refreshForcast = async() => {
         await fetchWeather()
-        weather.timeOfUpdate = getNow()
-      }
+        }
 
       const fetchWeather = async() => {
         // Create instance from Forecast class
@@ -107,15 +101,25 @@ import { computed, onMounted } from '@vue/runtime-core'
         newForcast.setForecast(cityData);
         await newForcast.updateWeather()
 
-        // get Forcast Hours
-        weather.dataHours =  await newForcast.dataHours
-        // get Forcast Days
-        weather.dataDaily =  await newForcast.dataDays
-        // get Forcast error
-        weather.errorData =  newForcast.errorData
+        Promise.all([newForcast.getHours(), newForcast.getDays(), newForcast.getError()]).then(res => {
+          weather.dataHours = res[0]
+          weather.dataDaily = res[1]
+          weather.errorData = res[2]
+          weather.timeOfUpdate = getNow()
+        }).catch(err => {
+          console.log(err)
+        })
       }
 
+      // refresh forcast data
+      const refreshForcast = async() => {
+        await getCityInfo()
+        weather.timeOfUpdate = getNow()
+      }
 
+    /**
+   * Computed properties
+    */
       const hourlyForcastLimit = computed(() => {
         if(weather?.dataHours?.cod == 200) {
           return weather.dataHours.list.slice(0, 4)
